@@ -354,7 +354,6 @@ std::string StatusCode(string location, int i)
     {
         for (std::map<std::string, std::string>::iterator it = ext.begin(); it != ext.end(); it++)
         {
-            // std::cout << "THE ITERATOR " << it->first << " : " << it->second << ";" << std::endl;
             if (it->second == location)
                 return (it->first);
         }

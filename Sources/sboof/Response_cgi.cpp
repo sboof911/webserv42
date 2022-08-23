@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 14:29:32 by amaach            #+#    #+#             */
-/*   Updated: 2022/08/23 02:27:35 by amaach           ###   ########.fr       */
+/*   Updated: 2022/08/23 03:35:23 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,6 @@ void        Response_cgi::set_header(Response & response)
     (void) response;
     std::ifstream               FILE(this->_cgi_response_file);
 
-    // std::cout << this->_cgi_response_file << "#     ///////\n"; 
     if (FILE.is_open())
     {
         std::string                 LINE;
@@ -201,7 +200,6 @@ void        Response_cgi::set_header(Response & response)
 
         while (getline (FILE, LINE))
             this->_FILEINLINE += LINE + "\n";
-    std::cout << "THE BODY IS = " << this->_FILEINLINE << std::endl << "FILE END\n";
         header_index = this->_FILEINLINE.find("\n\n");
         if (header_index != std::string::npos)
         {
@@ -220,15 +218,12 @@ std::string Response_cgi::set_status( Response & response )
     size_t                      status_index = 0;
     size_t                      len;
 
-    // std::cout << response.get_Request().get_version() << std::endl;
     if (_header.length())
         status_index = this->_header.find(response.get_Request().get_version());
     if (status_index != std::string::npos && !this->_header.empty())
     {
         len = this->_header.find("\n", 0);
-        std::cout << "The Header = " << this->_header << "The Header end " << std::endl;
         status = _header.substr(status_index + response.get_Request().get_version().size(), len);
-        std::cout << "I M IN \n";
     }
     return status;
 }
@@ -241,13 +236,7 @@ void        Response_cgi::fillResponseBuffer( Response & response )
     tmp = set_status(response);
     tmp += "Content-Lenght:" + to_string(this->_FILEINLINE.size()) + "\n";
     tmp += this->_header;
-    // std::cout << "THE HEADER = " << tmp << std::endl;
-    // std::cout << "THE HEADER IS = " << this->_header << std::endl << "HEADER END\n";
     tmp += this->_FILEINLINE;
     response.set_Body(tmp);
     response.set_is_cgi(true);
-    // std::cout << "THE BODY IS = " << this->_FILEINLINE << std::endl << "FILE END\n";
-    std::cout << "THE RESPONSE = " << response.get_Body() << std::endl;
-    // std::cout << "THE FILE = " << this->_FILEINLINE << std::endl;
-    // remove(_cgi_response_file.c_str());
 }

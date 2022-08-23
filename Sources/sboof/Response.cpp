@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 20:23:20 by amaach            #+#    #+#             */
-/*   Updated: 2022/08/23 02:53:19 by amaach           ###   ########.fr       */
+/*   Updated: 2022/08/23 03:37:18 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,7 +273,6 @@ int    Response::check_location()
         loc += *it;
     this->_location = loc;
     this->_location = skip_slash(this->_location);
- std::cout << std::endl << "loc :" << this->_location << std::endl;
     return (check_path());
 }
 
@@ -354,7 +353,6 @@ std::string    handle_index( std::vector<std::string> vector, std::string root)
     for(std::vector<std::string>::iterator it = tmp1.begin(); it != tmp1.end(); it++)
     {
         tmp = root + *it;
-        std::cout << "tmp=> " << tmp << std::endl;
         if (open(tmp.c_str(), O_RDONLY) != -1)
             return (tmp);
     }
@@ -367,7 +365,6 @@ void    Response::check_chancked( void )
 
     in_file.seekg(0, ios::end);
     this->_File_size = in_file.tellg();
-    std::cout << "inside check_chanked" << std::endl;
     if ( this->_File_size > 1000 ) // CHANGE AFTER TO 1M
     {
         this->_is_chanked = true;
@@ -414,16 +411,11 @@ int     Response::file_GET( void )
     std::string     tmp;
 
     if (this->_location_type == 1)
-    {
         tmp = this->_location;
-        // check_chancked();
-    }
     else if (this->_location_type == 2)
       tmp = handle_index(this->_Serv.get_index(), this->_location);
     if (tmp.empty())
         return 404;
-    // if (this->_is_chanked == true)
-        // return (file_Is_chancked());
     if (StatusCode(extension(tmp), 1).empty())
         return 400;
     this->_header->setHeader("Content-Type", (StatusCode(extension(tmp), 1)));
@@ -738,16 +730,12 @@ std::string Response::get_Response( void )
 {
     FirstLine   FirstLine(this->_request);
 
-    std::cout << "QUERY = " << this->_request.query << std::endl;
     // help_show_data(this->_request);
     // help_show_data_serv(this->_Serv);
     int i = 0;
     i = statuscode();
     errorsPages(i);
     if (this->_is_cgi && (i == 200))
-    {
-        std::cout << "I M IN JFHDFJKSAHJKAFHLSJKAFHSLAFHS" << std::endl;
         return (this->_Body);
-    }
     return (FirstLine.First_Line(i) + this->_header->getHeader() + this->_Body);
 }

@@ -358,7 +358,7 @@ std::string StatusCode(string location, int i)
             if (it->second == location)
                 return (it->first);
         }
-        return (NULL);
+        return ("");
     }
-    return (NULL);
+    return ("");
 }

@@ -424,7 +424,7 @@ int     Response::file_GET( void )
         return 404;
     // if (this->_is_chanked == true)
         // return (file_Is_chancked());
-    if (StatusCode(extension(tmp), 1) == NULL)
+    if (StatusCode(extension(tmp), 1).empty())
         return 400;
     this->_header->setHeader("Content-Type", (StatusCode(extension(tmp), 1)));
     this->_Body = file_to_string(tmp);
@@ -497,7 +497,7 @@ int     Response::Upload_file( std::string upload_path )
     this->_Upload_Path = upload_path + RandomWord() + "_Upload";
     if (this->_request.get_headrs()["Content-Type"].size() > 0)
     {
-        if (StatusCode(this->_request.get_headrs()["Content-Type"], 2) == NULL)
+        if (StatusCode(this->_request.get_headrs()["Content-Type"], 2).empty())
             return (400);
         this->_Upload_Path += "." + StatusCode(this->_request.get_headrs()["Content-Type"], 2);
     }

@@ -106,8 +106,7 @@ server::server(std::vector<std::string> text_vector,int helper)
    int number_of_locations = 0;
     this->_autoindex = false;
     this->_listen_port = -1;
-
-    std::map <std::string,std::string> default_error_pages;
+    std::map <std::string,std::string> default_error_pages = fill_error_page();
     this->_name = extract_server_names(text_vector,helper);
     this->_listen_port = extract_server_port(text_vector,helper);;
     this->_listen_host = extract_server_host(text_vector,helper);
@@ -120,10 +119,6 @@ server::server(std::vector<std::string> text_vector,int helper)
     this->_cgi = extract_server_cgi(text_vector,helper);
     this->_client_max_body_size = extract_server_max_body_size(text_vector,helper);
     this->_autoindex = extract_server_autoindex(text_vector,helper);
-    std::cout << "-----------------------Server   CGI     : ------------------"  << std::endl;
-    for (std::vector<cgi>::iterator it = this->_cgi.begin();it != this->_cgi.end();it++)
-    std::cout  << "CGI SIZE : "<<  _cgi.size() << "cgi_name : " <<it->get_cgi_name() << " cgi_path : " << it->get_cgi_path() << std::endl;
-
 
    int index = 0;
    number_of_locations = extract_number_of_locations(text_vector,helper);

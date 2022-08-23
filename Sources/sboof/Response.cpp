@@ -99,6 +99,8 @@ void     Response::errorsPages( int Status_Code)
             this->_Body = "<div class=\"error\"> <div class=\"error__title\">201</div> <div class=\"error__subtitle\">Created</div> <div class=\"error__description\">" + this->_Upload_Path + " </div> </div>" + file_to_string(tmp);
         else
             this->_Body = file_to_string(tmp);
+        // std::cout << " TMP " << tmp << std::endl;
+
         this->_header->setHeader("Content-Length", to_string(this->_Body.size()));
     }
 }
@@ -679,5 +681,6 @@ std::string Response::get_Response( void )
     errorsPages(i);
     if (this->_is_cgi && (i == 200))
         return (this->_Body);
+    std::cout << FirstLine.First_Line(i) << this->_Body  << std::endl;
     return (FirstLine.First_Line(i) + this->_header->getHeader() + this->_Body);
 }

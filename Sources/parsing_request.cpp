@@ -77,8 +77,7 @@ int get_request_method(std::vector<std::string > request)
     std::cout << method[0] << std::endl;
     return (3);
     }
-    std::cout << "Unknow REQUEST METHOOOOD" << std::endl;
-    // std::cout << method[0] << std::endl;
+    // std::cout << "Unknow REQUEST METHOD" << std::endl;
     return (0);
 }
 
@@ -103,6 +102,7 @@ while ((pos = s.find(delimiter)) != std::string::npos) {
 return (0);
 
 }
+
 int get_vrs_length(std::string first_line,int found)
 {
     int count = 0;
@@ -113,6 +113,7 @@ int get_vrs_length(std::string first_line,int found)
     }
     return (count);
 }
+
 std::vector<std::string>     split_sboof(std::string s1, std::string delim)
 {
     std::vector<std::string>     vector;
@@ -131,6 +132,7 @@ std::vector<std::string>     split_sboof(std::string s1, std::string delim)
 
     return (vector);
 }
+
 std::string get_request_location(std::vector<std::string > request)
 {
     std::string location;
@@ -141,7 +143,7 @@ std::string get_request_location(std::vector<std::string > request)
          if(request[0].find("?") != std::string::npos)
          {
           method = split_sboof(request[0]," ");
-           if(!method[1].empty())
+           if((method.size() > 1) && !method[1].empty())
            {
             int savior = 0;
             size_t found = 0;
@@ -157,41 +159,24 @@ std::string get_request_location(std::vector<std::string > request)
             parsing_helper = split_sboof(method[1],"?");
             for(std::vector<std::string>::iterator it = parsing_helper.begin();it != parsing_helper.end();it++)
             {
-          //        std::cout << "HOHOOHOHOHOHOOH" << std::endl;
-          // std::cout << "HOHOOHOHOHOHOOH" << std::endl;
-          // std::cout << "HOHOOHOHOHOHOOH" << std::endl;
-          // std::cout << "HOHOOHOHOHOHOOH" << std::endl;
-          // std::cout << "HOHOOHOHOHOHOOH" << std::endl;
               if (savior == 0 && ((*it) == "?"))
               return ("/");
               savior++;
             }
             location = parsing_helper[0];
-            // if (parsing_helper.size() == 1)
-            // return ("/");
-
-
            }
          
          }
        else
        {
       method = split_sboof(request[0]," ");
-
+      if(method.empty() || method.size() == 1)
+        return("/");
         if(!method[1].empty() && method.size() > 2 )
         location = method[1];
         else
         return "/" ; // If empty SGV To fixe 
        }
-     //   location_length = get_location_length(request[0]);
-      //  location.insert(0,request[0],found + 4,11);
-
-    
- 
-  //  method = split(request[0]," ","POST");
-  //  std::cout << method[0] << std::endl;
- 
-    
     return location;
 }
 int get_number_of_query(std::string first_line)
@@ -207,6 +192,7 @@ int get_number_of_query(std::string first_line)
   }
   return (count);
 }
+
 std::string get_request_query(std::vector<std::string > request)
 {
    std::string qwery;
@@ -218,6 +204,8 @@ std::string get_request_query(std::vector<std::string > request)
   size_t found  = 0;
 
           method = split_sboof(request[0]," ");
+          if(method.empty() || method.size() == 1)
+          return qwery;
               if(!method[1].empty() && count == 0)
            {
              found = method[1].find("?");
@@ -240,24 +228,17 @@ std::string get_request_vrs(std::string first_line)
     std::vector<std::string> first_word;
     tmp.push_back(first_line);
     first_word = split_by_space(tmp);
-    for (std::vector<std::string>::iterator it = first_word.begin();it != first_word.end();it++)
-    std::cout << "first_word : " << *it << std::endl;
     if (first_word.size() == 3)
     {
       first_word[2].pop_back();
       first_word[2].pop_back();
-
-      return (first_word[2]);
+      return ("HTTP/1.1");
     }
     if (first_word.size() == 2)
-    {
-       std::cout << "HAHAHAHHAHAHAHAHAHHAHAHAHAHAHGGAJKSJKADSJKDAJKSDJKASJKDSDAKLSDASDJKASDASJDASUFSUSAFUASUFASUFOUASFHOUASFHSAHOFHIASFHOISA =>  " << std::endl;
-
-    }
-      //  std::cout << "VRS AU DESSUS  =>  " << std::endl;
-
-    return vrs;
+       vrs = "HTTP/1.1";
+    return "HTTP/1.1";
 }
+
 std::vector<std::string > splitv2(std::string line,std::string delim)
 {
 std::string s = line;
@@ -301,22 +282,15 @@ int get_request_port(std::vector<std::string> full_request)
         if ( found_delim != std::string::npos)
         {
           tmp = split_sboof(tail,":");
-          //  std::cout << "REMOVING THE PORT ..." << tmp[1]<<  std::endl;
           tail.clear();
           tail = tmp[1];
            if(!tmp[1].empty() && isnumber(tmp[1]))
                     num = std::stoi(tmp[1]);
-          // new_tail.insert(0,tail,found);
-          // tail.clear();
-          // tail = new_tail;
-          // std::cout << tail << " N| " << new_tail << std::endl;
-          // new_tail.clear();
         }
       }
      }
      i++;
      }
-    //  std::cout ÷<< "THE PORT IS +>>>>" << num << std::endl;
   return (num);
 
 }
@@ -331,28 +305,18 @@ int get_request_port(std::vector<std::string> full_request)
     int length = 0;
        size_t found ;
     full_request.assign(full_request.begin() + 1,full_request.end());
-  //  std::cout << "------------Request Headers----------------"  << std::endl;
     while ( i < full_request.size())
     {   
         if (full_request[i].compare("\n")  == 0)
         {
-    std::cout << "------------------PPPPPPPPPPPPP------------"  << std::endl;
         return (headers); // to TEST
         }
       found = full_request[i].find(":");
         if(found != string::npos)
     {
-      // tmp = split(full_request[i]," ",":");
       length = full_request[i].size() - found;
       head.insert(0,full_request[i],0,found);
       tail.insert(0,full_request[i],found + 2,length - 4);
-    // std::cout << " TMP SIZE => " << tmp.size() << std::endl;
-      // if(!tmp[0].empty())
-      // head = tmp[0];
-      // if(!tmp[1].empty())
-      // {
-      // tail = tmp[1];
-      // }
       if(head == "Host")
       {
         size_t found_delim = 0;
@@ -361,19 +325,11 @@ int get_request_port(std::vector<std::string> full_request)
         if ( found_delim != std::string::npos)
         {
           tmp = split_sboof(tail,":");
-          // std::cout << "REMOVING THE PORT ..." << tmp[0]<<  std::endl;
           tail.clear();
           tail = tmp[0];
-          // new_tail.insert(0,tail,found);
-          // tail.clear();
-          // tail = new_tail;
-          // std::cout << tail << " N| " << new_tail << std::endl;
-          // new_tail.clear();
         }
 
       }
-      // std::cout << "head= "<< head <<" tail=" <<  tail  <<"|" << std::endl;
-
     headers[head] = tail;
     head.clear();
     tail.clear();
@@ -394,24 +350,17 @@ int get_request_port(std::vector<std::string> full_request)
     int inside = 0;
     std::string body;
     
-      //  std::cout << "BDY => " << full_request[i]<< std::endl;
 
     while ( i < full_request.size())
     {
-      //  std::cout << "BDY => " << full_request[i] << "size: " << full_request[i].size() << std::endl;
            if (inside == 1)
         {
           body.insert(body.size(),full_request[i]);
-            // body = body + full_request[i];
-          //  std::cout  <<  full_request[i] << std::endl;
         }
         if (full_request[i].size() == 2)
         inside = 1;
-         // std::cout << "|"  <<  full_request[i + 1]  << "|"<< std::endl;
-
      
         i++;
     }
-    // body.insert(body.size(),'\0');
     return (body);
  }

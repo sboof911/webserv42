@@ -192,7 +192,7 @@ while(1)
         if (FD_ISSET(fds[i],&read_fd_set))
         {
                new_addr = multi_server[i].get_sock_ader();
-            std::cout << " Data is coming .... " << "Serv who should answer : " << multi_server[i].get_name(0) << std::endl; 
+            // std::cout << " Data is coming .... " << "Serv who should answer : " << multi_server[i].get_name(0) << std::endl; 
             if ((new_socket = accept(fds[i],(struct sockaddr *)&new_addr,&addrlen))  < 0)
             {
                 perror("accept");
@@ -203,7 +203,7 @@ while(1)
            if(all_connections[i] ==  0)
                 {
                     all_connections[i] = new_socket;
-                    std::cout << "Adding a new client at position : " << i << std::endl;
+                    // std::cout << "Adding a new client at position : " << i << std::endl;
                     break;
                 }
             }
@@ -219,7 +219,7 @@ while(1)
            memset(buf,0,INT_MAX);
              if (valread == recv(sd,buf,10000,0) ==  0)
             {
-                std::cerr << "-+-+-+-+ THE BUFFER "<< valread << std::endl;
+                // std::cerr << "-+-+-+-+ THE BUFFER "<< valread << std::endl;
                 full_request = parsing_request(buf);
                 free(buf);
                  Request parsed_request(full_request);
@@ -232,8 +232,8 @@ while(1)
                 }
                  FD_CLR(sd,&read_fd_set);
                  FD_SET(sd,&write_set);
-                  std::cout << ("------------------ message -------------------") << std::endl;
-        std::cout << ("------------------ CREATING SBOOF RESPONSE HERE  -------------------") << std::endl;
+                //   std::cout << ("------------------ message -------------------") << std::endl;
+        // std::cout << ("------------------ CREATING SBOOF RESPONSE HERE  -------------------") << std::endl;
         if (parsed_request.get_host_port() ==  0)
       {
             parsed_request.set_port(multi_server[0].get_listen_port());
@@ -248,7 +248,7 @@ while(1)
                 {
          Response response(parsed_request,multi_server[srv_idx]);
       std::string sboof_response(response.get_Response());
-        std::cout << ("------------------ FINAL RESPONSE -------------------") << std::endl;
+        // std::cout << ("------------------ FINAL RESPONSE -------------------") << std::endl;
                 if((pp = send(sd ,sboof_response.c_str(),sboof_response.size(),0) == -1))
         {
             std::cout << "error : Response to client !" << std::endl;
@@ -353,20 +353,20 @@ void servers (std::vector <server> ss,std::vector <int> &fds)
     if (fcntl(socket_fd,F_SETFL,O_NONBLOCK) < 0)
     std::cout <<" could not set TCP listening socket to be non-blocking" << std::endl;
     //  memset(sockaddr.sin_zero, '\0', sizeof sockaddr.sin_zero);
-    std::cout  << " " << ss[i].get_listen_host()<< "------------" << ss[i].get_listen_port() << std::endl;
+    // std::cout  << " " << ss[i].get_listen_host()<< "------------" << ss[i].get_listen_port() << std::endl;
      if (bind(socket_fd, (struct sockaddr*)&sockaddr,
              sizeof(sockaddr))
         < 0) {
         std::cout << ("bind failed")  << strerror(errno)<< std::endl;
         // exit(EXIT_FAILURE);
     }
-    std::cout << " BEFORE LISTEN" << std::endl;
+    // std::cout << " BEFORE LISTEN" << std::endl;
     if (listen(socket_fd, 255) < 0) {
         std::cerr << ("listen") << std::endl;
         exit(EXIT_FAILURE);
     }
     fds.push_back(socket_fd);
-        std::cout << ("Adding a new fd ...")  << socket_fd  << ss[i].get_name(0) << std::endl;
+        // std::cout << ("Adding a new fd ...")  << socket_fd  << ss[i].get_name(0) << std::endl;
     
         }
         else

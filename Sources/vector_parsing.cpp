@@ -455,6 +455,7 @@ std::map <std::string,std::string > extract_server_errors_page1(std::vector<std:
         {
             if (parser[y].compare("error_page") == 0)
             {
+                std::cout << "ERROR PAGES" << std::endl;
                 test = split (text_vector[i]," ",(char *)"error_page");
                 if (test.size()  == 3)
                     errors_page[test[1]] = test[2];

@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/04 23:23:12 by amaach            #+#    #+#             */
-/*   Updated: 2022/08/22 21:52:39 by amaach           ###   ########.fr       */
+/*   Updated: 2022/08/23 03:48:49 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ private:
     std::string     _Upload_Path;
     int             _location_index;
     int             _location_type; // 0 nothing 1 file 2 directory
-    bool            _is_chanked;
     long long       _File_size;
     long long       _Bytes_Sent;
-    std::ifstream   _FILE_chunk;
     std::string     _Cgi_Path;
     bool            _is_cgi;
     Response();
@@ -51,7 +49,6 @@ public:
     Response(Request &request, server &Serv);
     ~Response();
     std::string get_Response( void );
-    bool        get_is_chunked( void );
 
 public:
     //*********GETTERS*********
@@ -88,8 +85,6 @@ private:
     int         handle_GET_autoindex( void );
     int         cgi_GET( void );
     int         file_GET( void );
-    int        file_Is_chancked( void );
-    void        check_chancked( void );
 
     //**********DELETE*********
     int         cgi_DELETE( void );

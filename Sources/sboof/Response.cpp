@@ -6,7 +6,7 @@
 /*   By: amaach <amaach@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 20:23:20 by amaach            #+#    #+#             */
-/*   Updated: 2022/08/23 03:37:18 by amaach           ###   ########.fr       */
+/*   Updated: 2022/08/23 03:49:55 by amaach           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ void            Response::set_Body(std::string str)
 
 //***************************************MEMBER FUNCTIONS***************************************//
 
-Response::Response(Request &request, server &Serv) : _FILE_chunk(NULL)
+Response::Response(Request &request, server &Serv)
 {
     this->_header = new Header(Serv, request);
     this->_request = request;
@@ -170,7 +170,6 @@ Response::Response(Request &request, server &Serv) : _FILE_chunk(NULL)
     this->_Upload_Path = "";
     this->_location_index = -404;
     this->_location_type = -404;
-    this->_is_chanked = false;
     this->_File_size = 0;
     this->_Bytes_Sent = 0;
     this->_Cgi_Path = "";
@@ -185,16 +184,10 @@ Response::~Response()
     this->_Upload_Path.clear();
     this->_location_index = -404;
     this->_location_type = -404;
-    this->_is_chanked = false;
     this->_File_size = 0;
     this->_Bytes_Sent = 0;
     this->_Cgi_Path.clear();
     this->_is_cgi = false;
-}
-
-bool    Response::get_is_chunked( void )
-{
-    return (this->_is_chanked);    
 }
 
 //********************************************CHECKS********************************************//
@@ -210,11 +203,7 @@ bool    Response::check_path()
         if( s.st_mode & S_IFDIR )
             this->_location_type = 2;
         else if( s.st_mode & S_IFREG )
-        {
             this->_location_type = 1;
-            if (s.st_size > MAX_BUFFER)
-                this->_is_chanked = true;
-        }
         else
         {
             this->_location_type = 0;
@@ -357,53 +346,6 @@ std::string    handle_index( std::vector<std::string> vector, std::string root)
             return (tmp);
     }
     return ("");
-}
-
-void    Response::check_chancked( void )
-{
-    std::ifstream in_file(this->_location.c_str(), ios::binary);
-
-    in_file.seekg(0, ios::end);
-    this->_File_size = in_file.tellg();
-    if ( this->_File_size > 1000 ) // CHANGE AFTER TO 1M
-    {
-        this->_is_chanked = true;
-        this->_Serv.set_response_chunked(true);
-    }
-    in_file.close();
-}
-
-int     Response::file_Is_chancked( void )
-{
-    if (this->_Bytes_Sent == 0)
-    {
-        this->_header->setHeader("Content-Type", (extension(this->_location)));
-        this->_header->setHeader("Content-Length", to_string(this->_File_size));
-        this->_FILE_chunk.open(this->_location.c_str(), ios::binary);
-    }
-
-    char* Data;
-    std::fstream::pos_type namepos = this->_Bytes_Sent;
-
-    this->_FILE_chunk.seekg(namepos);
-    Data = new char[1024];
-    this->_FILE_chunk.read(Data, 1024);
-    this->_Body = Data;
-    delete Data;
-    if (this->_Bytes_Sent < this->_File_size - 1024)
-        this->_Bytes_Sent += 1024;
-    else
-    {
-        this->_FILE_chunk.seekg(this->_Bytes_Sent, ios::end);
-        Data = new char[this->_File_size - this->_Bytes_Sent + 1];
-        this->_FILE_chunk.read(Data, this->_File_size - this->_Bytes_Sent);
-        Data[this->_File_size - this->_Bytes_Sent] = 0;
-        this->_Body = Data;
-        this->_is_chanked = false;
-        this->_FILE_chunk.close();
-        delete Data;
-    }
-    return (200);
 }
 
 int     Response::file_GET( void )
